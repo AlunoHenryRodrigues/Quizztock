@@ -1,7 +1,7 @@
 (function () {
   "use strict";
 
-  const TOTAL_QUESTIONS = 6;
+  const TOTAL_QUESTIONS = 5;
   const STORAGE = {
     active: "quizztock.active.v1",
     previous: "quizztock.previousQuestions.v1"
@@ -13,12 +13,7 @@
     brownie: {
       key: "brownie", title: "Brownie", icon: "🍫",
       message: "Perfeito! Você dominou o QuiStock e conquistou o prêmio máximo.",
-      speech: "SEIS DE SEIS! AÍ SIM! Você foi incrível!", mood: "perfect"
-    },
-    botton: {
-      key: "botton", title: "Botton do QuiStock", icon: "✦",
-      message: "Quase perfeito! Seu conhecimento vale um botton oficial do QuiStock.",
-      speech: "BOAAAA! Você mandou muito!", mood: "happy"
+      speech: "CINCO DE CINCO! AÍ SIM! Você foi incrível!", mood: "perfect"
     },
     pen_or_candle: {
       key: "pen_or_candle", title: "Escolha seu prêmio", icon: "↗",
@@ -28,6 +23,11 @@
         { key: "caneta", title: "Caneta", icon: "✎" },
         { key: "vela", title: "Vela", icon: "♢" }
       ]
+    },
+    brigadeiro: {
+      key: "brigadeiro", title: "Brigadeiro", icon: "🍬",
+      message: "Boa! Você prestou atenção e conquistou um brigadeiro.",
+      speech: "Mandou bem! Esse brigadeiro é seu!", mood: "happy"
     },
     sticker_or_candy: {
       key: "sticker_or_candy", title: "Escolha seu prêmio", icon: "✦",
@@ -105,9 +105,9 @@
   }
 
   function prizeForScore(score) {
-    if (score === 6) return PRIZES.brownie;
-    if (score === 5) return PRIZES.botton;
+    if (score === 5) return PRIZES.brownie;
     if (score === 4) return PRIZES.pen_or_candle;
+    if (score === 3) return PRIZES.brigadeiro;
     return PRIZES.sticker_or_candy;
   }
 
@@ -292,9 +292,9 @@
     state.prizeKey = prizeForScore(state.score).key;
     saveState();
     showScreen("suspense");
-    elements.suspenseMessage.textContent = "Repassando as suas seis respostas...";
+    elements.suspenseMessage.textContent = "Repassando as suas cinco respostas...";
     elements.suspenseCountdown.textContent = "";
-    announce("As seis perguntas terminaram. O resultado será revelado em instantes.");
+    announce("As cinco perguntas terminaram. O resultado será revelado em instantes.");
 
     const stages = [
       [1500, "Conferindo cada ponto...", ""],
@@ -331,14 +331,14 @@
     state.prizeKey = prize.key;
     saveState();
     showScreen("result");
-    elements.finalScore.innerHTML = `${state.score}<span>/6</span>`;
+    elements.finalScore.innerHTML = `${state.score}<span>/${TOTAL_QUESTIONS}</span>`;
     elements.resultMessage.textContent = prize.message;
     elements.resultSpeech.textContent = prize.speech;
-    elements.resultTitle.textContent = state.score === 6 ? "Resultado perfeito!" : state.score >= 4 ? "Prêmio conquistado!" : "Desafio concluído!";
+    elements.resultTitle.textContent = state.score === TOTAL_QUESTIONS ? "Resultado perfeito!" : state.score >= 4 ? "Prêmio conquistado!" : "Desafio concluído!";
     setMascotMood(prize.mood);
     renderPrize(prize);
-    if (state.score >= 5) createConfetti(state.score === 6 ? 34 : 18);
-    announce(`Resultado final: ${state.score} de 6. ${prize.message}`);
+    if (state.score >= 4) createConfetti(state.score === TOTAL_QUESTIONS ? 34 : 18);
+    announce(`Resultado final: ${state.score} de ${TOTAL_QUESTIONS}. ${prize.message}`);
   }
 
   function renderPrize(prize) {
