@@ -3,7 +3,7 @@
 
   const TOTAL_QUESTIONS = 5;
   const STORAGE = {
-    active: "quizztock.active.v1",
+    active: "quizztock.active.v2",
     previous: "quizztock.previousQuestions.v1"
   };
   const LETTERS = ["A", "B", "C", "D"];
@@ -79,7 +79,7 @@
 
   function createEmptyState() {
     return {
-      version: 1,
+      version: 2,
       status: "home",
       questions: [],
       currentIndex: 0,
@@ -111,6 +111,31 @@
     return PRIZES.sticker_or_candy;
   }
 
+  function buildCorrectPositions(count) {
+    const positions = [];
+    while (positions.length < count) positions.push(...shuffle([0, 1, 2, 3]));
+    positions.length = count;
+    let arranged = shuffle(positions);
+    let attempts = 0;
+    while (arranged.some((position, index) => index > 0 && position === arranged[index - 1]) && attempts < 20) {
+      arranged = shuffle(positions);
+      attempts += 1;
+    }
+    return arranged;
+  }
+
+  function arrangeOptions(question, correctPosition) {
+    const mapped = question.options.map((option, sourceIndex) => ({
+      id: `${question.id}-${sourceIndex}`,
+      text: option.text,
+      correct: option.correct
+    }));
+    const correct = mapped.find(option => option.correct);
+    const incorrect = shuffle(mapped.filter(option => !option.correct));
+    incorrect.splice(correctPosition, 0, correct);
+    return incorrect;
+  }
+
   function chooseQuestions() {
     let previous = [];
     try { previous = JSON.parse(localStorage.getItem(STORAGE.previous) || "[]"); } catch (_) { previous = []; }
@@ -132,15 +157,13 @@
       attempts += 1;
     }
 
-    const prepared = shuffle(selected).map(question => ({
+    const shuffledQuestions = shuffle(selected);
+    const correctPositions = buildCorrectPositions(shuffledQuestions.length);
+    const prepared = shuffledQuestions.map((question, index) => ({
       id: question.id,
       category: question.category,
       text: question.text,
-      options: shuffle(question.options.map((option, sourceIndex) => ({
-        id: `${question.id}-${sourceIndex}`,
-        text: option.text,
-        correct: option.correct
-      })))
+      options: arrangeOptions(question, correctPositions[index])
     }));
 
     localStorage.setItem(STORAGE.previous, JSON.stringify(prepared.map(question => question.id)));
@@ -162,7 +185,7 @@
   function restoreState() {
     try {
       const saved = JSON.parse(localStorage.getItem(STORAGE.active) || "null");
-      if (!saved || saved.version !== 1 || !Array.isArray(saved.questions) || saved.questions.length !== TOTAL_QUESTIONS) return false;
+      if (!saved || saved.version !== 2 || !Array.isArray(saved.questions) || saved.questions.length !== TOTAL_QUESTIONS) return false;
       state = saved;
       state.currentIndex = Math.min(state.answers.length, TOTAL_QUESTIONS);
       state.score = Math.min(Math.max(Number(state.score) || 0, 0), TOTAL_QUESTIONS);
