@@ -42,7 +42,7 @@ Exatamente uma alternativa deve manter `correct: true`; as outras três devem us
 Abra `app.js` e procure a função `prizeForScore`. A regra atual é:
 
 - 5 acertos: brownie;
-- 4 acertos: escolha entre caneta ou vela;
+- 4 acertos: vela;
 - 3 acertos: brigadeiro;
 - menos de 3 acertos: escolha entre adesivo ou bala.
 

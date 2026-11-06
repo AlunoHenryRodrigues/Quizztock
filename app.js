@@ -15,14 +15,10 @@
       message: "Perfeito! Você dominou o QuiStock e conquistou o prêmio máximo.",
       speech: "CINCO DE CINCO! AÍ SIM! Você foi incrível!", mood: "perfect"
     },
-    pen_or_candle: {
-      key: "pen_or_candle", title: "Escolha seu prêmio", icon: "↗",
-      message: "Mandou bem! Agora escolha entre uma caneta e uma vela.",
-      speech: "Muito bem! Você ganhou o direito de escolher!", mood: "happy",
-      choices: [
-        { key: "caneta", title: "Caneta", icon: "✎" },
-        { key: "vela", title: "Vela", icon: "♢" }
-      ]
+    candle: {
+      key: "candle", title: "Vela", icon: "♢",
+      message: "Mandou bem! Você conquistou uma vela.",
+      speech: "Muito bem! Essa vela é sua!", mood: "happy"
     },
     brigadeiro: {
       key: "brigadeiro", title: "Brigadeiro", icon: "🍬",
@@ -106,7 +102,7 @@
 
   function prizeForScore(score) {
     if (score === 5) return PRIZES.brownie;
-    if (score === 4) return PRIZES.pen_or_candle;
+    if (score === 4) return PRIZES.candle;
     if (score === 3) return PRIZES.brigadeiro;
     return PRIZES.sticker_or_candy;
   }
