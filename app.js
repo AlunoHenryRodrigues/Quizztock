@@ -1,9 +1,9 @@
 (function () {
   "use strict";
 
-  const TOTAL_QUESTIONS = 5;
+  const TOTAL_QUESTIONS = 8;
   const STORAGE = {
-    active: "quizztock.active.v2",
+    active: "quizztock.active.v3",
     previous: "quizztock.previousQuestions.v1"
   };
   const LETTERS = ["A", "B", "C", "D"];
@@ -12,13 +12,13 @@
   const PRIZES = {
     brownie: {
       key: "brownie", title: "Brownie", icon: "🍫",
-      message: "Perfeito! Você dominou o QuiStock e conquistou o prêmio máximo.",
-      speech: "CINCO DE CINCO! AÍ SIM! Você foi incrível!", mood: "perfect"
+      message: "Excelente! Você entendeu muito bem o funcionamento do QuiStock.",
+      speech: "BOAAAA! Você mandou muito!", mood: "happy"
     },
     candle: {
       key: "candle", title: "Vela", icon: "♢",
-      message: "Mandou bem! Você conquistou uma vela.",
-      speech: "Muito bem! Essa vela é sua!", mood: "happy"
+      message: "Perfeito! Você acertou todas e conquistou o prêmio máximo.",
+      speech: "OITO DE OITO! Essa vela é sua!", mood: "perfect"
     },
     brigadeiro: {
       key: "brigadeiro", title: "Brigadeiro", icon: "🍬",
@@ -75,7 +75,7 @@
 
   function createEmptyState() {
     return {
-      version: 2,
+      version: 3,
       status: "home",
       questions: [],
       currentIndex: 0,
@@ -101,9 +101,9 @@
   }
 
   function prizeForScore(score) {
-    if (score === 5) return PRIZES.brownie;
-    if (score === 4) return PRIZES.candle;
-    if (score === 3) return PRIZES.brigadeiro;
+    if (score === 8) return PRIZES.candle;
+    if (score >= 6) return PRIZES.brownie;
+    if (score >= 4) return PRIZES.brigadeiro;
     return PRIZES.sticker_or_candy;
   }
 
@@ -181,7 +181,7 @@
   function restoreState() {
     try {
       const saved = JSON.parse(localStorage.getItem(STORAGE.active) || "null");
-      if (!saved || saved.version !== 2 || !Array.isArray(saved.questions) || saved.questions.length !== TOTAL_QUESTIONS) return false;
+      if (!saved || saved.version !== 3 || !Array.isArray(saved.questions) || saved.questions.length !== TOTAL_QUESTIONS) return false;
       state = saved;
       state.currentIndex = Math.min(state.answers.length, TOTAL_QUESTIONS);
       state.score = Math.min(Math.max(Number(state.score) || 0, 0), TOTAL_QUESTIONS);
@@ -311,9 +311,9 @@
     state.prizeKey = prizeForScore(state.score).key;
     saveState();
     showScreen("suspense");
-    elements.suspenseMessage.textContent = "Repassando as suas cinco respostas...";
+    elements.suspenseMessage.textContent = "Repassando as suas oito respostas...";
     elements.suspenseCountdown.textContent = "";
-    announce("As cinco perguntas terminaram. O resultado será revelado em instantes.");
+    announce("As oito perguntas terminaram. O resultado será revelado em instantes.");
 
     const stages = [
       [1500, "Conferindo cada ponto...", ""],
@@ -356,7 +356,7 @@
     elements.resultTitle.textContent = state.score === TOTAL_QUESTIONS ? "Resultado perfeito!" : state.score >= 4 ? "Prêmio conquistado!" : "Desafio concluído!";
     setMascotMood(prize.mood);
     renderPrize(prize);
-    if (state.score >= 4) createConfetti(state.score === TOTAL_QUESTIONS ? 34 : 18);
+    if (state.score >= 6) createConfetti(state.score === TOTAL_QUESTIONS ? 34 : 18);
     announce(`Resultado final: ${state.score} de ${TOTAL_QUESTIONS}. ${prize.message}`);
   }
 

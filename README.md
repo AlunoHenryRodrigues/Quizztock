@@ -41,10 +41,10 @@ Exatamente uma alternativa deve manter `correct: true`; as outras três devem us
 
 Abra `app.js` e procure a função `prizeForScore`. A regra atual é:
 
-- 5 acertos: brownie;
-- 4 acertos: vela;
-- 3 acertos: brigadeiro;
-- menos de 3 acertos: escolha entre adesivo ou bala.
+- 8 acertos: vela;
+- 6 ou 7 acertos: brownie;
+- 4 ou 5 acertos: brigadeiro;
+- 3 acertos ou menos: escolha entre adesivo ou bala.
 
 Os textos e opções de prêmio ficam centralizados no objeto `PRIZES`, no início do mesmo arquivo.
 
@@ -52,7 +52,7 @@ Os textos e opções de prêmio ficam centralizados no objeto `PRIZES`, no iníc
 
 - O botão **Voltar ao início** encerra totalmente a sessão do visitante.
 - A partida em andamento é preservada se a página for atualizada por acidente.
-- A combinação anterior de cinco perguntas é lembrada para reduzir repetições na partida seguinte.
+- A combinação anterior de oito perguntas é lembrada para reduzir repetições na partida seguinte.
 - Pressione `F` para alternar a tela cheia quando o foco não estiver em um botão.
 
 ## Compatibilidade
